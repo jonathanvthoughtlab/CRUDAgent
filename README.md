@@ -4,7 +4,6 @@ Um aplicativo moderno de gerenciamento de tarefas com recursos de IA, construíd
 
 ## Funcionalidades
 
-
 - Autenticação de usuários (login, registro, recuperação de senha)
 - Perfil de usuário com foto e informações pessoais
 - Criação, edição e exclusão de tarefas
