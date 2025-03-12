@@ -1,5 +1,6 @@
 # Solução para o Erro de RLS no Supabase
 
+
 Este guia contém instruções específicas para resolver o erro "new row violates row-level security policy" que está ocorrendo ao tentar adicionar novas tarefas.
 
 ## Solução Imediata: Desabilitar RLS Temporariamente

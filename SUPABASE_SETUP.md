@@ -1,5 +1,6 @@
 # Guia de Configuração do Supabase
 
+
 Este guia irá ajudá-lo a configurar o Supabase para este projeto CRUD.
 
 ## 1. Criar uma conta no Supabase

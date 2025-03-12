@@ -39,6 +39,7 @@ Este guia irá ajudá-lo a configurar corretamente o Storage no Supabase para ar
 
 ### Política para atualização de usuários autenticados:
 
+
 1. Clique em "Add Policy"
 2. Selecione "Custom Policy"
 3. Configure:

@@ -4,6 +4,7 @@ Este guia contém instruções específicas para configurar corretamente as pol�
 
 ## Problema: Erro ao fazer upload de imagens
 
+
 Se você está enfrentando erros ao tentar adicionar uma tarefa com imagem, provavelmente há um problema com as políticas de segurança do bucket `todo-images` no Supabase Storage.
 
 ## Solução: Configurar o Bucket e Políticas Corretamente
