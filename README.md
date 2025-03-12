@@ -1,142 +1,145 @@
-# CRUDIA - CRUD com Inteligência Artificial
+# CRUD - Aplicação de Gerenciamento de Tarefas
 
-Um aplicativo moderno de gerenciamento de tarefas com recursos de IA, construído com Next.js, Tailwind CSS e Supabase.
+Uma aplicação moderna de gerenciamento de tarefas (to-do list) que permite criar, ler, atualizar e excluir tarefas, construída com Next.js e Supabase.
 
 ## Funcionalidades
 
-- Autenticação de usuários (login, registro, recuperação de senha)
-- Perfil de usuário com foto e informações pessoais
-- Criação, edição e exclusão de tarefas
-- Organização de tarefas por status (pendentes/concluídas)
-- Recursos de IA para sugestão de tarefas e priorização
-- Análise de sentimento em descrições de tarefas
-- Resumo automático de tarefas longas
-- Arrastar e soltar para mover tarefas entre colunas
-- Editor de texto rico para descrições de tarefas
-- Upload de imagens para tarefas e perfil
-- Atualizações em tempo real
+- Autenticação de usuários
+- Criação de novas tarefas
+- Visualização de tarefas existentes
+- Atualização de tarefas
+- Exclusão de tarefas
+- Marcação de tarefas como concluídas
 
-## Tecnologias
+## Tecnologias Utilizadas
 
-- [Next.js 14](https://nextjs.org/)
-- [React 18](https://reactjs.org/)
-- [Tailwind CSS](https://tailwindcss.com/)
-- [Supabase](https://supabase.io/) (Autenticação, Banco de Dados e Storage)
-- [TipTap](https://tiptap.dev/) (Editor de texto rico)
-- [React Beautiful DnD](https://github.com/atlassian/react-beautiful-dnd) (Arrastar e soltar)
-- [Date-fns](https://date-fns.org/) (Manipulação de datas)
-- [React Hot Toast](https://react-hot-toast.com/) (Notificações)
-- [OpenAI API](https://openai.com/) (Recursos de IA)
+- **Frontend e Backend**: Next.js
+- **Banco de Dados**: Supabase (PostgreSQL)
+- **Autenticação**: Supabase Auth
+- **Estilização**: Tailwind CSS
 
-## Configuração do Projeto
+## Como Executar o Projeto Localmente
 
-### 1. Clonar o repositório
+### Pré-requisitos
+
+- Node.js (versão 14 ou superior)
+- npm ou yarn
+- Conta no Supabase
+- Git
+
+### Passos para Execução
+
+1. **Clone o repositório**
 
 ```bash
-git clone https://github.com/jonathanvthoughtlab/CRUDIA.git
-cd CRUDIA
+git clone https://github.com/jonathanvthoughtlab/CRUDAgent.git
+cd CRUDAgent
 ```
 
-### 2. Instalar dependências
+2. **Instale as dependências**
 
 ```bash
 npm install
+# ou
+yarn install
 ```
 
-### 3. Configurar variáveis de ambiente
+3. **Configure as variáveis de ambiente**
 
 Crie um arquivo `.env.local` na raiz do projeto com as seguintes variáveis:
 
 ```
 NEXT_PUBLIC_SUPABASE_URL=sua-url-do-supabase
 NEXT_PUBLIC_SUPABASE_ANON_KEY=sua-chave-anonima-do-supabase
-OPENAI_API_KEY=sua-chave-da-api-openai
 ```
 
-### 4. Executar o projeto em desenvolvimento
+4. **Inicie o servidor de desenvolvimento**
 
 ```bash
 npm run dev
+# ou
+yarn dev
 ```
 
-O projeto estará disponível em [http://localhost:3000](http://localhost:3000).
+5. **Acesse a aplicação**
 
-### 5. Construir para produção
+Abra seu navegador e acesse `http://localhost:3000`
 
-```bash
-npm run build
-npm start
-```
+## Configuração do Supabase
 
-## Configuração do Banco de Dados
-
-### 1. Criar um projeto no Supabase
-
-1. Acesse [supabase.com](https://supabase.com/) e crie uma conta
+1. Crie uma conta no [Supabase](https://supabase.com/)
 2. Crie um novo projeto
-3. Anote a URL e a chave anônima do projeto (serão usadas nas variáveis de ambiente)
-
-### 2. Configurar as tabelas e políticas
-
-Execute os seguintes scripts SQL no Editor SQL do Supabase:
-
-#### Tabela de Tarefas
+3. Copie a URL e a chave anônima do projeto para as variáveis de ambiente
+4. Configure a tabela de tarefas no SQL Editor:
 
 ```sql
 -- Criar tabela de tarefas
-CREATE TABLE IF NOT EXISTS todos (
+CREATE TABLE IF NOT EXISTS tasks (
   id UUID DEFAULT uuid_generate_v4() PRIMARY KEY,
   title TEXT NOT NULL,
   description TEXT,
   completed BOOLEAN DEFAULT FALSE,
   user_id UUID REFERENCES auth.users(id) NOT NULL,
-  image_url TEXT,
-  created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
-  due_date TIMESTAMP WITH TIME ZONE,
-  ai_summary TEXT,
-  ai_sentiment TEXT,
-  ai_priority INTEGER
+  created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
 );
 
--- Criar políticas de segurança para a tabela de tarefas
-ALTER TABLE todos ENABLE ROW LEVEL SECURITY;
+-- Habilitar RLS (Row Level Security)
+ALTER TABLE tasks ENABLE ROW LEVEL SECURITY;
 
--- Política para permitir que usuários vejam suas próprias tarefas
+-- Criar políticas de segurança
 CREATE POLICY "Usuários podem ver suas próprias tarefas"
-  ON todos
+  ON tasks
   FOR SELECT
   USING (auth.uid() = user_id);
 
--- Política para permitir que usuários insiram suas próprias tarefas
 CREATE POLICY "Usuários podem inserir suas próprias tarefas"
-  ON todos
+  ON tasks
   FOR INSERT
   WITH CHECK (auth.uid() = user_id);
 
--- Política para permitir que usuários atualizem suas próprias tarefas
 CREATE POLICY "Usuários podem atualizar suas próprias tarefas"
-  ON todos
+  ON tasks
   FOR UPDATE
   USING (auth.uid() = user_id);
 
--- Política para permitir que usuários excluam suas próprias tarefas
 CREATE POLICY "Usuários podem excluir suas próprias tarefas"
-  ON todos
+  ON tasks
   FOR DELETE
   USING (auth.uid() = user_id);
 ```
 
-#### Configuração de Storage
-
-Consulte o arquivo `SUPABASE_STORAGE_SETUP.md` para instruções detalhadas sobre como configurar o storage no Supabase para este projeto.
-
 ## Estrutura do Projeto
 
-- `app/` - Páginas e rotas da aplicação (Next.js App Router)
-- `components/` - Componentes reutilizáveis
-- `lib/` - Funções utilitárias e configurações
-- `public/` - Arquivos estáticos
-- `supabase/` - Scripts SQL para configuração do banco de dados
+```
+CRUDAgent/
+├── app/                # Páginas e rotas da aplicação (Next.js App Router)
+├── components/         # Componentes reutilizáveis
+├── lib/                # Funções utilitárias e configurações
+│   └── supabase.js     # Cliente Supabase
+├── public/             # Arquivos estáticos
+├── styles/             # Estilos globais
+├── .env.local          # Variáveis de ambiente
+├── .gitignore          # Arquivos ignorados pelo Git
+├── next.config.js      # Configuração do Next.js
+├── package.json        # Dependências e scripts
+├── tailwind.config.js  # Configuração do Tailwind CSS
+└── README.md           # Documentação do projeto
+```
+
+## Comandos Úteis
+
+- `npm run dev` - Inicia o servidor de desenvolvimento
+- `npm run build` - Cria a versão de produção
+- `npm start` - Inicia o servidor em modo de produção
+- `npm lint` - Executa o linter para verificar erros de código
+
+## Contribuição
+
+1. Faça um fork do projeto
+2. Crie uma branch para sua feature (`git checkout -b feature/nova-feature`)
+3. Faça commit das suas alterações (`git commit -m 'Adiciona nova feature'`)
+4. Faça push para a branch (`git push origin feature/nova-feature`)
+5. Abra um Pull Request
 
 ## Licença
 
